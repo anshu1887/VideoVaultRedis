@@ -1,10 +1,9 @@
 @extends('layouts.app')
+
 @section('content')
 
 <?php 
-{{--  echo "<pre>";
-print_r($video);
-die;  --}}
+{{--  dd($video);  --}}
 ?>
 
     <div class="container">
@@ -14,14 +13,15 @@ die;  --}}
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title">{{ $video->title }}</h5>
+                        <p><strong>Views:</strong> {{ $views }}</p>
                         <video width="720" controls preload="metadata">
-                            <source src="{{ Storage::url('/videos/' . $video->filename) }}" type="video/mp4">
+                            <source src="{{ Storage::url('videos/' . $video->filename) }}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
-                        <p>Uploaded at: {{ $video->created_at->format('d M Y') }}</p>
+                        <p>Uploaded at: {{ date('d M Y', strtotime($video->created_at)) }}</p>
                     </div>
                 </div>
-            </div> 
+            </div>
         </div>
     </div>
 @endsection

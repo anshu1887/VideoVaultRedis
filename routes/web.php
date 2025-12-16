@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VideoController;
+use Illuminate\Support\Facades\Redis;
 
 Route::get('/', function () {
     return view('welcome');
@@ -17,3 +18,21 @@ Route::post('/update/{id}', [VideoController::class, 'update'])->name('video.upd
 Route::get('/watch/{id}', function ($id) {
     return "Video ID: " . $id;
 })->name('video.watch');
+
+
+
+Route::get('/redis-test', function () {
+    try{
+        $ping = Redis::ping();
+
+        Redis::set('project', 'VideoVault');
+
+        $name = Redis::get('project');
+
+        Redis::setex('temp', 10, 'This is a temporary value');
+
+        return "Ping Response: {$ping} <br> SetName: {$name} <br> SetEx: Temporary value set for 10 seconds.";
+
+    } catch(Exception $e) {
+        return "Redis Error" . $e->getMessage();   }
+});

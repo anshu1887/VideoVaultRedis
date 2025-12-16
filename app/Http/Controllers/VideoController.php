@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Video;
+use App\Services\RedisVideoService;
 
 class VideoController extends Controller
 {
@@ -48,7 +49,9 @@ class VideoController extends Controller
      */
     public function show(string $id)
     {
-        return view('videos.watch', ['video' => Video::findOrFail($id)]);
+        $video = RedisVideoService::getVideo($id);
+        $views = RedisVideoService::incrementViews($id);
+        return view('videos.watch', ['video' => \json_decode($video), 'views' => $views]);
     }
 
     /**
@@ -66,14 +69,14 @@ class VideoController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'video' => 'required|mimes:mp4,avi,mov|max:204800' // max 200MB,
+            'video' => 'nullable|mimes:mp4,avi,mov|max:204800' // max 200MB,
         ]);
 
         $video = Video::findOrFail($id);
         if ($request->hasFile('video')) {
-            $path = $request->file('video')->store('videos');
-            if(file_exists(storage_path('videos/' . $video->filename)))
-                unlink(storage_path('videos/' . $video->filename));
+            $path = $request->file('video')->store('videos', 'public');
+            if(file_exists(storage_path('app/public/videos/' . $video->filename)))
+                unlink(storage_path('app/public/videos/' . $video->filename));
         } else {
             $path = 'videos/' . $video->filename;
         }
@@ -81,8 +84,6 @@ class VideoController extends Controller
             'title' => $request->input('title'),
             'filename' => basename($path),
         ]);
-
-        return back();
 
         return redirect()->route('videos.watch', $video->id)->with('success', 'Video updated successfully.');
     }
