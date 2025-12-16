@@ -30,10 +30,10 @@ class VideoController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'video' => 'required|mimes:mp4|avi,mov|max:204800' // max 200MB,
+            'video' => 'required|mimes:mp4|max:204800' // max 200MB,
         ]);
 
-        $path = $request->file('video')->store('videos');
+        $path = $request->file('video')->store('videos', 'public');
 
         $video = Video::create([
             'title' => $request->input('title'),
@@ -56,7 +56,7 @@ class VideoController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('videos.edit', ['video' => Video::findOrFail($id)]);
     }
 
     /**
@@ -64,7 +64,27 @@ class VideoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'video' => 'required|mimes:mp4,avi,mov|max:204800' // max 200MB,
+        ]);
+
+        $video = Video::findOrFail($id);
+        if ($request->hasFile('video')) {
+            $path = $request->file('video')->store('videos');
+            if(file_exists(storage_path('videos/' . $video->filename)))
+                unlink(storage_path('videos/' . $video->filename));
+        } else {
+            $path = 'videos/' . $video->filename;
+        }
+        $video->update([
+            'title' => $request->input('title'),
+            'filename' => basename($path),
+        ]);
+
+        return back();
+
+        return redirect()->route('videos.watch', $video->id)->with('success', 'Video updated successfully.');
     }
 
     /**

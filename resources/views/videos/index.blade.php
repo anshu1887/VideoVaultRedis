@@ -11,7 +11,8 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ $video->title }}</h5>
                             <p class="card-text">Duration: {{ $video->duration ?? 'N/A' }} seconds</p>
-                            <a href="{{ route('video.watch', ['id' => $video->id])  }}" class="btn btn-success">Watch Video</a>
+                            <a href="{{ route('videos.watch', ['id' => $video->id])  }}" class="btn btn-success">Watch Video</a>
+                            <a href="{{ route('videos.edit', ['id' => $video->id])  }}" class="btn btn-success">Edit Video</a>
                         </div>
                     </div>
                 </div>
