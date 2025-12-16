@@ -18,6 +18,7 @@ Route::post('/update/{id}', [VideoController::class, 'update'])->name('video.upd
 Route::get('/watch/{id}', function ($id) {
     return "Video ID: " . $id;
 })->name('video.watch');
+Route::get('/trendings', [VideoController::class, 'trending'])->name('videos.trending');
 
 
 

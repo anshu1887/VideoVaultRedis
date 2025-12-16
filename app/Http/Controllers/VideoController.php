@@ -8,12 +8,33 @@ use App\Services\RedisVideoService;
 
 class VideoController extends Controller
 {
+    protected $redisService;
+
+    public function __construct(RedisVideoService $redisService) {
+        $this->redisService = $redisService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         return view('videos.index', ['videos' => Video::all()]);
+    }
+
+    public function trending()
+    {
+        $trendings = $this->redisService->trending();
+
+        $videos = [];
+        foreach ($trendings as $id => $score) {
+            $videos[] = [
+                'video' => Video::find($id),
+                'views' => $this->redisService->getViews($id)
+            ];
+        }
+
+        return view('videos.trending', ['videos' => $videos]);
     }
 
     /**
@@ -47,10 +68,13 @@ class VideoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        $video = RedisVideoService::getVideo($id);
-        $views = RedisVideoService::incrementViews($id);
+        $video = $this->redisService->getVideo($id);
+        $views = $this->redisService->incrementViews($id);
+
+        $this->redisService->addToTrending($id);
+
         return view('videos.watch', ['video' => \json_decode($video), 'views' => $views]);
     }
 

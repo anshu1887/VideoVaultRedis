@@ -19,8 +19,6 @@ Class RedisVideoService {
     }
 
     public static function getVideo($id) {
-        Redis::del("Video:$id"); // For testing purposes, remove this line in production
-
         if(Redis::exists("Video:$id")) {
             return Redis::hgetall("Video:$id");
         }
@@ -37,5 +35,15 @@ Class RedisVideoService {
 
     public static function getViews($id) {
         return Redis::get("Video:$id:views") ?? 0;
+    }
+
+    // Add video to trending (Sorted Set)
+    public static function addToTrending($id) {
+        return Redis::zincrby('trending_videos', 1, $id);
+    }
+
+    // Get top trending videos
+    public static function trending($limit = 10) {
+        return Redis::zrevrange('trending_videos', 0, $limit - 1);
     }
 }
