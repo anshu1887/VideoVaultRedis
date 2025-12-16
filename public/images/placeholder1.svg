@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" fill="none">
+  <rect width="1200" height="675" rx="12" fill="#f3f4f6" />
+  <g fill="#e5e7eb">
+    <rect x="150" y="180" width="900" height="315" rx="8" />
+  </g>
+  <text x="600" y="360" text-anchor="middle" fill="#9ca3af" font-family="Arial, Helvetica, sans-serif" font-size="36">Video thumbnail</text>
+</svg>

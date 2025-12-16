@@ -1,0 +1,1 @@
+<svg {{ $attributes->merge(['viewBox' => '0 0 20 20','fill'=>'none','class'=>'inline-block w-4 h-4']) }} xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 14h3v-4l4 4 5-8 2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>

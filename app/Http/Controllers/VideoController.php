@@ -70,7 +70,7 @@ class VideoController extends Controller
      */
     public function show($id)
     {
-        $video = $this->redisService->getVideo($id);
+        $video = json_encode($this->redisService->getVideo($id));
         $views = $this->redisService->incrementViews($id);
 
         $this->redisService->addToTrending($id);
@@ -117,6 +117,26 @@ class VideoController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $video = Video::find($id);
+        if (! $video) {
+            return redirect()->route('videos.index')->with('error', 'Video not found.');
+        }
+
+        // delete file from storage
+        $filePath = storage_path('app/public/videos/' . $video->filename);
+        if (file_exists($filePath)) {
+            @unlink($filePath);
+        }
+
+        // remove from redis trending if service available
+        try {
+            $this->redisService->removeFromTrending($id);
+        } catch (\Throwable $e) {
+            // ignore if service method not available or redis down
+        }
+
+        $video->delete();
+
+        return redirect()->route('videos.index')->with('success', 'Video deleted successfully.');
     }
 }

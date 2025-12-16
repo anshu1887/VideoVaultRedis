@@ -1,51 +1,55 @@
-<html>
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#0f172a">
+    <title>{{ config('app.name', 'Video Vault') }}</title>
+    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @else
+        <link href="https://unpkg.com/tailwindcss@^3/dist/tailwind.min.css" rel="stylesheet">
+    @endif
+</head>
+<body class="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white text-slate-900 antialiased">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <header class="py-6 flex items-center justify-between">
+            <a href="{{ route('videos.index') }}" class="flex items-center gap-3">
+                <div class="h-10 w-10 bg-gradient-to-br from-red-500 to-yellow-400 rounded-lg flex items-center justify-center text-white font-bold shadow-lg">VV</div>
+                <div>
+                    <span class="text-xl font-semibold">Video Vault</span>
+                    <div class="text-xs text-slate-500">Discover & share amazing videos</div>
+                </div>
+            </a>
 
-    <head>
-        <title>
-            {{ __('Video Vault') }}
-        </title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    </head>
+            <nav class="flex items-center gap-4">
+                <a href="{{ route('videos.index') }}" class="text-sm text-slate-700 hover:text-slate-900">Home</a>
+                <a href="{{ route('videos.trending') }}" class="text-sm text-slate-700 hover:text-slate-900">Trending</a>
+                <a href="{{ route('videos.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-md text-sm hover:opacity-95">Upload</a>
+                @if (Route::has('login'))
+                    @auth
+                        <a href="{{ url('/dashboard') }}" class="text-sm">Dashboard</a>
+                    @else
+                        <a href="{{ route('login') }}" class="text-sm">Log in</a>
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="ml-2 text-sm">Register</a>
+                        @endif
+                    @endauth
+                @endif
+            </nav>
+        </header>
 
-    <body>
-        
-        <main class="m-auto">
-            <header>
-                <h1>Video Vault</h1>
-                <nav class="navbar navbar-expand-lg bg-body-tertiary">
-                    <div class="container-fluid">
-                        {{--  <a class="navbar-brand" href="#">Navbar</a>  --}}
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="navbarNav">
-                            <ul class="navbar-nav">
-                                <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page"  href="{{ route('videos.index') }}">Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link"  href="{{ route('videos.create') }}">Upload Videos</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link"  href="{{ route('videos.trending') }}">Trending Videos</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-            </header>
+        <main class="py-6">
             @yield('content')
         </main>
 
-        <footer>
-            <p>&copy; 2024 Video Vault</p>
+        <footer class="py-8 text-center text-sm text-slate-500">
+            &copy; {{ date('Y') }} Video Vault — Made with care.
         </footer>
+    </div>
 
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
-    </body>
-
+    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+        @vite(['resources/js/app.js'])
+    @endif
+</body>
 </html>
